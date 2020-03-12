@@ -1,10 +1,11 @@
 package easy.factory.shape.presto.util;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.util.StringUtils;
 
+import easy.factory.shape.presto.util.PrestoMethod.DefaultMethod.DefaultMethodBuilder;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,17 +13,9 @@ public class PrestoMethod {
 	
 	ArrayList<DefaultMethod> arrayMethod = new ArrayList<>();
 	
-	public void addMethod(boolean isStatic, String access, String returnType, String methodName, String[] variables){
-
-		DefaultMethod defaultMethod = new DefaultMethod();
-		defaultMethod.setStatic(isStatic);
-		defaultMethod.setAccess(access);
-		defaultMethod.setReturnType(returnType);
-		defaultMethod.setMethodName(methodName);
-		defaultMethod.setVariables(variables);
-
-		arrayMethod.add(defaultMethod);
-	}	
+	public void addMethod(DefaultMethodBuilder build) {
+		arrayMethod.add(build.build());
+	}
 	
 	@Override
 	public String toString() {
@@ -36,46 +29,68 @@ public class PrestoMethod {
 		return sb.toString();
 	}
 	
-	class DefaultMethod {
-		@Getter @Setter boolean isStatic;
-		@Getter @Setter String access;
-		@Getter @Setter String returnType;
-		@Getter @Setter String methodName;
-		@Getter @Setter String[] variables;
+	@Builder
+	static class DefaultMethod {
+		
+		@Setter boolean isStatic;
+		@Setter String access;
+		@Setter String returnType;
+		@Setter String methodName;
+		@Setter String[] variables;
+
+		@Builder.Default private String FORMAT = "\t$static%s %s %s($variables){\r\n\r\n$returnType\t}"; 
+		
+		//static
+		private void processStatic(String find) {
+			if(isStatic) replace(find, "static ");
+			else replace(find, "");
+		}
+		
+		//variables
+		private void processVariables(String find) {
+			if(variables != null) replace(find, "%s");
+			else replace(find, "");
+		}
+		
+		//return 
+		private void processReturn(String find) {
+			
+			if(returnType.equalsIgnoreCase("void")) replace(find, "");
+			else if(returnType.equalsIgnoreCase("string")) replace(find, "\t\treturn \"\";\r\n");
+			else if(returnType.equalsIgnoreCase("int")) replace(find, "\t\treturn 0;\r\n");
+			else replace(find, "\t\treturn new "+ StringUtils.capitalize(returnType) +"();\r\n");
+		}
+		
+		//find and change
+		private void replace(String find, String change) {
+			this.FORMAT = this.FORMAT.replace(find, change);
+		}
+		
+		private StringBuffer getVariablesText() {
+			
+			StringBuffer tempVar = new StringBuffer();
+			if(this.variables != null) {
+				for (String var : variables) {
+					if(tempVar.length() > 0) tempVar.append(", ");
+					tempVar.append(var);
+				}
+			}
+			
+			return tempVar;
+		}
 		
 		@Override
 		public String toString() {
 			
-			String format = "\t$static%s %s %s($variables){\r\n\r\n$returnType\t}"; 
+			//format
+			processStatic("$static");
+			processVariables("$variables");
+			processReturn("$returnType");
 
-			//파라미터가 있으면 키워드를 살리고, 없으면 지우는게 핵심
-			if(isStatic) format = format.replace("$static", "static ");
-			if(variables != null) format = format.replace("$variables", "%s");
-			
-			//remove
-			format = format.replace("$static", "");
-			format = format.replace("$variables", "");
-			
 			//variables
-			StringBuffer variable = new StringBuffer();
-			for (String var : variables) {
-				
-				if(variable.length() > 0) variable.append(", ");
-				variable.append(var);
-			}
+			StringBuffer tempVar = getVariablesText();
 			
-			//return value
-			if(returnType.equalsIgnoreCase("void")) {
-				format = format.replace("$returnType", "");
-			}else if(returnType.equalsIgnoreCase("string")) {
-				format = format.replace("$returnType", "\t\treturn \"\";\r\n");
-			}else if(returnType.equalsIgnoreCase("int")) {
-				format = format.replace("$returnType", "\t\treturn 0;\r\n");
-			}else {
-				format = format.replace("$returnType", "\t\treturn new "+ StringUtils.capitalize(returnType) +"();\r\n");
-			}
-			
-			return String.format(format, access, returnType, methodName, variable.toString());
+			return String.format(FORMAT, access, returnType, methodName, tempVar.toString());
 		}
 	}
 	

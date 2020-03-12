@@ -1,6 +1,6 @@
 package easy.factory.shape.presto.receive;
 
-import easy.factory.shape.presto.receive.make.MakeContoroller;
+import easy.factory.shape.presto.util.PrestoExample;
 
 public class ReceiveData {
 
@@ -8,15 +8,7 @@ public class ReceiveData {
 		
 		System.out.println("-------------- 프로그램 시작 --------------");
 		
-		//입력값으로 메뉴명을 받고
-		String menuTab = "purchase";
-		String menuName = "motionCapture";
-		
-		//이 메뉴명으로 컨트롤러 샘플을 만들어서 내려준다.
-		MakeContoroller makeContoroller = new MakeContoroller();
-		String ss = makeContoroller.getFile(menuName, menuTab);
-		
-		System.out.println(ss);
+		PrestoExample.main(null);
 		
 		System.out.println("-------------- 프로그램 종료 --------------");
 	}
