@@ -1,4 +1,4 @@
-package easy.factory.shape.presto.util;
+package easy.factory.shape.presto.java;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ public class PrestoImport {
 	List<String> path = new ArrayList<String>();
 	
 	public void setPath(String path) {
-		this.path.add(String.format("import %s", path));
+		this.path.add(String.format("import %s;", path));
 	}
 	
 	public List<String> getPath() {

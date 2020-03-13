@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import easy.factory.shape.presto.receive.ReceiveData;
+import easy.factory.shape.presto.example.ExampleRun;
 
 @SpringBootApplication
 @RestController
@@ -21,7 +21,7 @@ public class PrestoApplication {
 		
 		if(gubun.equals("1")) {
 			name+= "<a href='http://127.0.0.1:8080/hello'>refresh</>";
-			ReceiveData data = new ReceiveData();
+			ExampleRun data = new ExampleRun();
 			data.start();
 		}
 		

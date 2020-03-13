@@ -1,4 +1,4 @@
-package easy.factory.shape.presto.util;
+package easy.factory.shape.presto.java;
 
 import lombok.Setter;
 
