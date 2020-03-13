@@ -23,8 +23,8 @@ public class ClassExampleRun {
 		
 		//import
 		PrestoImport pi = new PrestoImport();
-		pi.setPath("lombok.Builder");
-		pi.setPath("lombok.ToString");
+		pi.setImport("lombok.Builder");
+		pi.setImport("lombok.ToString");
 		
 		//method
 		PrestoMethod pm = new PrestoMethod();

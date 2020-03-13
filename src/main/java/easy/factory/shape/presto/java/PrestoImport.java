@@ -7,11 +7,11 @@ public class PrestoImport {
 
 	List<String> path = new ArrayList<String>();
 	
-	public void setPath(String path) {
+	public void setImport(String path) {
 		this.path.add(String.format("import %s;", path));
 	}
 	
-	public List<String> getPath() {
+	public List<String> getImport() {
 		return path;
 	}
 	
